@@ -362,12 +362,8 @@ class PublishTab(QtGui.QWidget):
         self.PubLabel = QtGui.QLabel("PubTopic:")
         self.Playload = QtGui.QLabel("Message :")
         self.pubEdit = QtGui.QLineEdit()
-        self.pubEdit.setText('/u/R8700/bae45a25f900')
-#         self.pubEdit.setText('/u/R8700/bae45524e500')
         self.PlayloadEdit = QtGui.QLineEdit()
         self.PlayloadEdit.setStyleSheet(" height: 37px;")
-        self.PlayloadEdit.setText('RKDRDYlQ6oYu9QsY2\x88\v712347682\00\01')
-        self.PlayloadEdit.setText('52 4b 44 52 44 59 6c 51 36 6f 59 75 39 51 73 59 32 86 0b 35 39 39 33 36 39 37 31 39 00 01')
         self.PushButton = QtGui.QPushButton(self.tr("Publish"))
         self.PushButton.setStyleSheet(" height: 50px;background:#D3D3D3")
         global pubbrowser
@@ -477,9 +473,7 @@ class SubTab(QtGui.QWidget):
         SublishGroup = QtGui.QGroupBox("Subscribe")
         self.SubLabel = QtGui.QLabel("SubTopic:")
         self.SubEdit = QtGui.QLineEdit()
-        self.SubEdit.setText('/b/R8700/bae45a25f900')
-#         self.SubEdit.setText('$SYS/broker/bytes/received')
-#         self.SubEdit.setText('/u/RKDRD/YlQ6oYu9QsY2')
+        self.SubEdit.setText('$SYS/broker/bytes/received')
         self.SubButton = QtGui.QPushButton(self.tr("Subscribe"))
         self.SubButton.setStyleSheet(" height: 50px;background:#D3D3D3")
         global browser
