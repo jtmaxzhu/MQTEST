@@ -18,7 +18,7 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow,self).__init__(parent)
         self.setWindowTitle(self.tr("MQ TEST"))
         self.setWindowIcon(QtGui.QIcon(":img/image/mq.png"));
-        QtCore.QThread.sleep(0)#启动画面停留时间
+        QtCore.QThread.sleep(1)#启动画面停留时间
         QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))#设置整体风格
         QtGui.QApplication.setPalette(QtGui.QApplication.style().standardPalette())#设置整体风格
         self.resize(800,550)#####设置窗口大小
@@ -27,7 +27,7 @@ class MainWindow(QtGui.QMainWindow):
         # 开始装载样式表
 #         qss_file = open('style.qss').read()
 #         self.setStyleSheet(qss_file)
-        self.a = A()
+        self.a = MTEST()
         self.setCentralWidget(self.a)
         self.createActions()
         self.createMenus()
@@ -109,13 +109,11 @@ class MainWindow(QtGui.QMainWindow):
     
     def about(self):
         QtGui.QMessageBox.about(self, "About", 
-                "author:liuxiaohu\n"
-                "vision:V1.0.0\n"
-                "by Python 2.7 && PyQt4")  
+                "Version:1.1.0\nAuthor:liuxh\nMQ TEST for Python 2.7 PYQT 4")  
         
-class A(QtGui.QWidget):
+class MTEST(QtGui.QWidget):
     def __init__(self, parent=None):
-        super(A, self).__init__(parent)
+        super(MTEST, self).__init__(parent)
 
         nameLabel = QtGui.QLabel()
         nameLabel.setPixmap(QtGui.QPixmap(":img/image/note.png"))
@@ -126,12 +124,13 @@ class A(QtGui.QWidget):
         global dataflag#数据刷新标志
         
         self.ConnectButton = QtGui.QPushButton(self.tr("连接"))
-#         self.ConnectButton.setStyleSheet(" width: 60px;")
-        self.ConnectButton.setIcon(QtGui.QIcon(":img/image/tuxiang/connected.png"))
+        self.ConnectButton.setStyleSheet("background:#D4D4D4")      
+        self.ConnectButton.setIcon(QtGui.QIcon(":img/image/connected.png"))
         self.DisConnectButton = QtGui.QPushButton(self.tr("断开"))
+        self.DisConnectButton.setStyleSheet("background:#D4D4D4")   
         self.DisConnectButton.setDisabled(True)
 #         self.DisConnectButton.setStyleSheet(" width: 60px;")
-        self.DisConnectButton.setIcon(QtGui.QIcon(":img/image/tuxiang/disconnected.png"))
+        self.DisConnectButton.setIcon(QtGui.QIcon(":img/image/disconnected.png"))
         
         self.SettingButton = QtGui.QPushButton()
         self.SettingButton.setIcon(QtGui.QIcon(":img/image/disconnect.png"))
@@ -206,6 +205,7 @@ class A(QtGui.QWidget):
         self.bwThread.stop()
         self.SettingButton.setIcon(QtGui.QIcon(":img/image/disconnect.png"))  
         self.ConnectButton.setDisabled(False)
+        self.DisConnectButton.setDisabled(True)
 #         self.stopTimer()
     
     def initTimer(self):    
@@ -279,12 +279,20 @@ class A(QtGui.QWidget):
         return ''.join(self.a)
         
     def append(self):
-        browser.append(a+" "+str(b)+" "+str(c))    
-        m = binascii.b2a_hex(c)
-        h = self.strformathex(m)
-        h.rstrip()
-        t = time.asctime( time.localtime(time.time()) )
-        browser.append(a+" "+str(b)+" "+ h + " "+t)  
+        if sub.displayformatComboBox.currentIndex() == 1:
+#             browser.append(a+" "+str(b)+" "+str(c)) 
+            t = time.asctime( time.localtime(time.time()) )
+            browser.append('[topic]:'+ a +"---"+'[Qos]:'+str(b))
+            browser.append('[playload]:'+ str(c) + "---"+ t) 
+#             browser.append(t) 
+
+        else:   
+            m = binascii.b2a_hex(c)
+            h = self.strformathex(m)
+            h.rstrip()
+            t = time.asctime( time.localtime(time.time()) )
+            browser.append('[topic]:'+ a +"---"+'[Qos]:'+str(b))
+            browser.append('[playload]:'+ h + "---"+t)   
   
 
     
@@ -367,7 +375,7 @@ class PublishTab(QtGui.QWidget):
         pubbrowser.setFrameStyle(QtGui.QFrame.Panel|QtGui.QFrame.Sunken)
 #         style = "color: rgb(127, 0, 63);\
 #                 background-image: url(:img/image/3.jpg);"
-        style = "color:#7CFC00;background:#4D4D4D"
+        style = "color:#7CFC00;background:#000000"
         pubbrowser.setStyleSheet(style)
              
         self.QosLabel = QtGui.QLabel("Qos")
@@ -470,8 +478,7 @@ class SubTab(QtGui.QWidget):
         self.SubLabel = QtGui.QLabel("SubTopic:")
         self.SubEdit = QtGui.QLineEdit()
         self.SubEdit.setText('/b/R8700/bae45a25f900')
-#         self.SubEdit.setText('/b/R8700/bae45a25f900')
-        self.SubEdit.setText('$SYS/broker/bytes/received')
+#         self.SubEdit.setText('$SYS/broker/bytes/received')
 #         self.SubEdit.setText('/u/RKDRD/YlQ6oYu9QsY2')
         self.SubButton = QtGui.QPushButton(self.tr("Subscribe"))
         self.SubButton.setStyleSheet(" height: 50px;background:#D3D3D3")
@@ -490,12 +497,18 @@ class SubTab(QtGui.QWidget):
         self.QosComboBox.addItem("1")
         self.QosComboBox.addItem("2") 
         
+        self.formatLabel = QtGui.QLabel("Display Format")
+        self.displayformatComboBox = QtGui.QComboBox()
+        self.displayformatComboBox.addItem("HEX")
+        self.displayformatComboBox.addItem("Plain")
         
         self.pubLayout = QtGui.QGridLayout()
         self.pubLayout.addWidget(self.SubLabel,0,0)
         self.pubLayout.addWidget(self.SubEdit,0,1)
         self.pubLayout.addWidget(self.QosLabel,0,2)
         self.pubLayout.addWidget(self.QosComboBox,0,3) 
+        self.pubLayout.addWidget(self.formatLabel,1,0)
+        self.pubLayout.addWidget(self.displayformatComboBox,1,1)
         self.pubLayout.setSpacing(10)
         
         self.Vlineframe = QtGui.QFrame()
@@ -560,10 +573,10 @@ class SubTab(QtGui.QWidget):
             
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
-    splash = QtGui.QSplashScreen(QtGui.QPixmap(":img/image/mqtt.GIF"))
+    splash = QtGui.QSplashScreen(QtGui.QPixmap(":img/image/mqtt.gif"))
     splash.show()
     app.processEvents()
-    mainWin = A()
+    mainWin = MTEST()
     mainWin = MainWindow()
     mainWin.show()
     splash.finish(mainWin)

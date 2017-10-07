@@ -496,11 +496,11 @@ class TLSTab(QtGui.QDialog):
         
 
 #         
-
-if __name__ == '__main__':
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    dialog = ConfigDialog()
-    dialog.show()
-    app.exec_()   
-    dialog.conn.close()
+# 
+# if __name__ == '__main__':
+#     import sys
+#     app = QtGui.QApplication(sys.argv)
+#     dialog = ConfigDialog()
+#     dialog.show()
+#     app.exec_()   
+#     dialog.conn.close()
